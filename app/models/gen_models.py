@@ -7,6 +7,7 @@ from sqlalchemy.sql.sqltypes import TIMESTAMP
 from .user_models import *
 from .pharm_models import *
 from .fin_models import *
+# from .ops_models import *
 
 
 class Consultation(Base):
@@ -95,44 +96,50 @@ class MedDiagnostic(Base):
     __tablename__ = 'med_diagnostics'
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
-    name = Column(String, nullable=True)
+    name = Column(String, nullable=False)
     cost = Column(Integer, nullable=True)
+    description = Column(String, nullable=True)
     duration = Column(String, nullable=True)
-
-
-class MedLabTest(Base):
-    __tablename__ = 'med_labtests'
-
-    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
-    name = Column(String, nullable=True)
-    cost = Column(Integer, nullable=True)
-    duration = Column(String, nullable=True)
+    sessions = Column(String, nullable=True)
 
 
 class MedTherapy(Base):
     __tablename__ = 'med_therapies'
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
-    name = Column(String, nullable=True)
-    cost = Column(Integer, nullable=True)
+    name = Column(String, nullable=False)
+    cost = Column(Integer, nullable=False)
+    description = Column(String, nullable=True)
+    sessions = Column(Integer, nullable=True)
     duration = Column(String, nullable=True)
+
+
+class MedTest(Base):
+    __tablename__ = 'med_tests'
+
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    name = Column(String, nullable=False)
+    cost = Column(Integer, nullable=True)
+    description = Column(String, nullable=True)
 
 
 class MedImagery(Base):
     __tablename__ = 'med_imageries'
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
-    name = Column(String, nullable=True)
+    name = Column(String, nullable=False)
     cost = Column(Integer, nullable=True)
-    duration = Column(String, nullable=True)
+    description = Column(String, nullable=True)
 
 
-class MedSurgery(Base):
-    __tablename__ = 'med_surgeries'
+class MedOperation(Base):
+    __tablename__ = 'med_operations'
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
-    name = Column(String, nullable=True)
-    cost = Column(Integer, nullable=True)
+    name = Column(String, nullable=False)
+    cost = Column(Integer, nullable=False)
+    description = Column(String, nullable=True)
+    anaestesia_genre = Column(String, nullable=True)
     survival_rate = Column(Float, nullable=True)
     duration = Column(String, nullable=True)
 
@@ -181,7 +188,7 @@ class Admission(Base):
     room = relationship('Room', backref="admissions")
     genre = Column(String, nullable=True)
     note = Column(String, nullable=True)
-    cause = Column(String, nullable=True)
+    cause = Column(String, nullable=False)
     duration = Column(Integer, nullable=True)
     is_pending = Column(Boolean, nullable=False, server_default='True')
     doctor_id = Column(Integer, ForeignKey(
@@ -190,6 +197,7 @@ class Admission(Base):
     patient_id = Column(Integer, ForeignKey(
         'patients.id', ondelete="CASCADE"), nullable=True)
     patient = relationship('Patient', backref="admissions")
+    is_pending = Column(Boolean, nullable=False, server_default='True')
 
 
 class MedicalRecord(Base):

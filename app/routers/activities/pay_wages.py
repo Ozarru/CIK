@@ -57,7 +57,7 @@ def get_wage_payment(id: int, db: Session = Depends(get_db), current_user: dict 
                             detail=f"Forbidden!!! Insufficient authentication credentials.")
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=fin_schemas.PayWageReq)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=fin_schemas.PayWageRes)
 def create_wage_payment(paid_wage: fin_schemas.PayWageReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     if current_user.role_id >= 3:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,

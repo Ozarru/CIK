@@ -37,13 +37,14 @@ def get_admission(id: int, db: Session = Depends(get_db), current_user: dict = D
     return admission
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.AdmissionReq)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.AdmissionRes)
 def create_admission(admission: gen_schemas.AdmissionReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id != 1 or current_user.role_id != 3:
+    if current_user.role_id > 3 and current_user.role_id != 4:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
-    new_admission = gen_models.Admission(**admission.dict())
+    new_admission = gen_models.Admission(
+        doctor_id=current_user.id, **admission.dict())
     db.add(new_admission)
     db.commit()
     db.refresh(new_admission)

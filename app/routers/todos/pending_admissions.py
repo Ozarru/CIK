@@ -2,10 +2,10 @@ from typing import List, Optional
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 
-from ..models import gen_models
-from ..utils import oauth2
-from ..schemas import gen_schemas
-from ..config.database import get_db
+from ...models import gen_models
+from ...utils import oauth2
+from ...schemas import gen_schemas
+from ...config.database import get_db
 
 router = APIRouter(prefix='/pending-consultations',
                    tags=['Pending Consultations (waiting room)'])

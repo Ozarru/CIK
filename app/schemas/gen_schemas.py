@@ -95,20 +95,19 @@ class ConsultationResume(BaseModel):
 class AdmissionReq(BaseModel):
     date: datetime
     genre: str
-    note: str
-    motif: str
-    duration: str
-    doctor_id: str
-    patient_id: str
+    cause: str
+    note: Optional[str]
+    duration: Optional[str]
+    patient_id: int
 
 
 class AdmissionRes(BaseModel):
     id: int
     date: datetime
     genre: str
-    note: str
-    motif: str
-    duration: str
+    cause: str
+    note: Optional[str]
+    duration: Optional[str]
     doctor: UserResume
     patient: PatientResume
 
@@ -180,6 +179,37 @@ class Room(BaseModel):
     genre: str
     name: str
     cost: int
+
+    class Config:
+        orm_mode = True
+
+
+class MedExamination(BaseModel):
+    name: str
+    cost: Optional[int]
+    description: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class MedProcedure(BaseModel):
+    name: str
+    cost: Optional[int]
+    description: Optional[str]
+    duration: Optional[str]
+    sessions: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+
+class MedOperation(BaseModel):
+    name: str
+    cost: Optional[int]
+    description: Optional[str]
+    duration: Optional[str]
+    sessions: Optional[int]
 
     class Config:
         orm_mode = True

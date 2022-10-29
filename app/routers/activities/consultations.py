@@ -37,7 +37,7 @@ def get_consultation(id: int, db: Session = Depends(get_db), current_user: dict 
     return consultation
 
 
-# @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.ConsultationReq)
+# @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.ConsultationRes)
 # def create_consultation(consultation: gen_schemas.ConsultationReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
 #     if current_user.role_id != 1 or current_user.role_id != 3:
 #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,

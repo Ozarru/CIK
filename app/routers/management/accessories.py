@@ -37,7 +37,7 @@ def get_accessory(id: int, db: Session = Depends(get_db), current_user: dict = D
     return accessory
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=pharm_schemas.AccessoryReq)
+@router.post('/', status_code=status.HTTP_201_CREATED, response_model=pharm_schemas.AccessoryRes)
 def create_accessory(accessory: pharm_schemas.AccessoryReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     if current_user.role_id != 1 or current_user.role_id != 8:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
