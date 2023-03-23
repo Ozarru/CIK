@@ -11,12 +11,13 @@ router = APIRouter(prefix='/rooms', tags=['Rooms'])
 
 
 @router.get('/', response_model=List[gen_schemas.Room])
-def get_rooms(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def get_rooms(db: Session = Depends(get_db),  limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    # def get_rooms(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
     rooms = db.query(gen_models.Room).order_by(
-        gen_models.Room.cost).all()
+        gen_models.Room.price).all()
 
     if not rooms:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -25,10 +26,11 @@ def get_rooms(db: Session = Depends(get_db), current_user: dict = Depends(oauth2
 
 
 @router.get('/{id}', response_model=gen_schemas.Room)
-def get_room(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials.")
+def get_room(id: int, db: Session = Depends(get_db), ):
+    # def get_room(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
     room = db.query(gen_models.Room).filter(
         gen_models.Room.id == id).first()
     if not room:
@@ -38,10 +40,11 @@ def get_room(id: int, db: Session = Depends(get_db), current_user: dict = Depend
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.Room)
-def create_room(room: gen_schemas.Room, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id > 3:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def create_room(room: gen_schemas.Room, db: Session = Depends(get_db), ):
+    # def create_room(room: gen_schemas.Room, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if current_user.role_id > 3:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
     new_room = gen_models.Room(**room.dict())
     db.add(new_room)

@@ -11,10 +11,11 @@ router = APIRouter(prefix='/med_operations', tags=['Medical operations'])
 
 
 @router.get('/', response_model=List[gen_schemas.MedOperation])
-def get_operations(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def get_operations(db: Session = Depends(get_db), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    # def get_operations(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
     operations = db.query(gen_models.MedOperation).order_by(
         gen_models.MedOperation.date).all()
 
@@ -25,10 +26,11 @@ def get_operations(db: Session = Depends(get_db), current_user: dict = Depends(o
 
 
 @router.get('/{id}', response_model=gen_schemas.MedOperation)
-def get_operation(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials.")
+def get_operation(id: int, db: Session = Depends(get_db)):
+    # def get_operation(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
     operation = db.query(gen_models.MedOperation).filter(
         gen_models.MedOperation.id == id).first()
     if not operation:
@@ -38,10 +40,11 @@ def get_operation(id: int, db: Session = Depends(get_db), current_user: dict = D
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.MedOperation)
-def create_operation(operation: gen_schemas.MedOperation, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id > 2 or current_user.role_id != 4:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def create_operation(operation: gen_schemas.MedOperation, db: Session = Depends(get_db),):
+    # def create_operation(operation: gen_schemas.MedOperation, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if current_user.role_id > 2 or current_user.role_id != 4:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
     new_operation = gen_models.MedOperation(**operation.dict())
     db.add(new_operation)

@@ -11,10 +11,11 @@ router = APIRouter(prefix='/med_therapies', tags=['Medical Therapies'])
 
 
 @router.get('/', response_model=List[gen_schemas.MedProcedure])
-def get_therapies(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def get_therapies(db: Session = Depends(get_db), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    # def get_therapies(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
     therapies = db.query(gen_models.MedTherapy).order_by(
         gen_models.MedTherapy.date).all()
 
@@ -25,10 +26,11 @@ def get_therapies(db: Session = Depends(get_db), current_user: dict = Depends(oa
 
 
 @router.get('/{id}', response_model=gen_schemas.MedProcedure)
-def get_therapy(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials.")
+def get_therapy(id: int, db: Session = Depends(get_db), ):
+    # def get_therapy(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
     therapy = db.query(gen_models.MedTherapy).filter(
         gen_models.MedTherapy.id == id).first()
     if not therapy:
@@ -38,10 +40,11 @@ def get_therapy(id: int, db: Session = Depends(get_db), current_user: dict = Dep
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.MedProcedure)
-def create_therapy(therapy: gen_schemas.MedProcedure, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id > 2 or current_user.role_id != 4:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def create_therapy(therapy: gen_schemas.MedProcedure, db: Session = Depends(get_db), ):
+    # def create_therapy(therapy: gen_schemas.MedProcedure, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if current_user.role_id > 2 or current_user.role_id != 4:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
     new_therapy = gen_models.MedTherapy(**therapy.dict())
     db.add(new_therapy)

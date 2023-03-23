@@ -11,10 +11,11 @@ router = APIRouter(prefix='/med_tests', tags=['Medical Tests'])
 
 
 @router.get('/', response_model=List[gen_schemas.MedExamination])
-def get_tests(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def get_tests(db: Session = Depends(get_db),  limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    # def get_tests(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
     tests = db.query(gen_models.MedTest).order_by(
         gen_models.MedTest.date).all()
 
@@ -25,10 +26,11 @@ def get_tests(db: Session = Depends(get_db), current_user: dict = Depends(oauth2
 
 
 @router.get('/{id}', response_model=gen_schemas.MedExamination)
-def get_test(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials.")
+def get_test(id: int, db: Session = Depends(get_db), ):
+    # def get_test(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
     test = db.query(gen_models.MedTest).filter(
         gen_models.MedTest.id == id).first()
     if not test:
@@ -38,10 +40,11 @@ def get_test(id: int, db: Session = Depends(get_db), current_user: dict = Depend
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.MedExamination)
-def create_test(test: gen_schemas.MedExamination, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id > 2 or current_user.role_id != 7:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def create_test(test: gen_schemas.MedExamination, db: Session = Depends(get_db)):
+    # def create_test(test: gen_schemas.MedExamination, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if current_user.role_id > 2 or current_user.role_id != 7:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
     new_test = gen_models.MedTest(**test.dict())
     db.add(new_test)

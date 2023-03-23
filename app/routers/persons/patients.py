@@ -11,10 +11,11 @@ router = APIRouter(prefix='/patients', tags=['Patients'])
 
 
 @router.get('/', response_model=List[user_schemas.PatientRes])
-def get_patient(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def get_patients(db: Session = Depends(get_db), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    # def get_patient(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
     patients = db.query(user_models.Patient).order_by(
         user_models.Patient.reg_date).all()
 
@@ -25,10 +26,11 @@ def get_patient(db: Session = Depends(get_db), current_user: dict = Depends(oaut
 
 
 @router.get('/{id}', response_model=user_schemas.PatientRes)
-def get_patient(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials.")
+def get_patient(id: int, db: Session = Depends(get_db),):
+    # def get_patient(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
     patient = db.query(user_models.Patient).filter(
         user_models.Patient.id == id).first()
     if not patient:
@@ -38,10 +40,11 @@ def get_patient(id: int, db: Session = Depends(get_db), current_user: dict = Dep
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=user_schemas.PatientRes)
-def create_patient(patient: user_schemas.PatientReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id > 3 and current_user.role_id < 8:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def create_patient(patient: user_schemas.PatientReq, db: Session = Depends(get_db),):
+    # def create_patient(patient: user_schemas.PatientReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if current_user.role_id > 3 and current_user.role_id < 8:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
     new_patient = user_models.Patient(**patient.dict())
     db.add(new_patient)

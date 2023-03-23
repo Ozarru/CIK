@@ -1,5 +1,6 @@
+from sqlite3 import Date, Time
 from ..config.database import Base
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timezone
 from sqlalchemy import Boolean, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
@@ -8,6 +9,39 @@ from .user_models import *
 from .pharm_models import *
 from .fin_models import *
 # from .ops_models import *
+
+
+class Status(Base):
+    __tablename__ = 'statuses'
+
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    name = Column(String, nullable=False)
+
+
+class Appointment(Base):
+    __tablename__ = 'appointments'
+
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    # date = Column(Date(), nullable=True)
+    # time = Column(Time(), nullable=True)
+    day = Column(String, nullable=False)
+    time = Column(String, nullable=False)
+    patient_name = Column(String, nullable=False)
+    patient_tel = Column(String, nullable=False)
+    doctor_id = Column(Integer, ForeignKey(
+        'users.id', ondelete="CASCADE"), nullable=False)
+    doctor = relationship('User', backref="appointments")
+    is_pending = Column(Boolean, nullable=False, server_default='True')
+    date_booked = Column(TIMESTAMP(timezone=True),
+                         server_default=text('now()'))
+
+
+class ConsultationGenre(Base):
+    __tablename__ = 'consultation_genres'
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    name = Column(String, nullable=False)
+    price = Column(Integer, nullable=False)
+    parameters = Column(String, nullable=True)
 
 
 class Consultation(Base):
@@ -40,6 +74,9 @@ class Consultation(Base):
     patient_id = Column(Integer, ForeignKey(
         'patients.id', ondelete="CASCADE"), nullable=False)
     patient = relationship('Patient', backref="consultations")
+    genre_id = Column(Integer, ForeignKey(
+        'consultation_genres.id', ondelete="CASCADE"), nullable=True)
+    genre = relationship('ConsultationGenre', backref="consultations")
 
 
 class Certification(Base):
@@ -60,35 +97,32 @@ class Certification(Base):
 
 
 # RX management-----------------------
-class Prescription(Base):
-    __tablename__ = 'prescriptions'
+class Ordinance(Base):
+    __tablename__ = 'ordinances'
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
     date = Column(TIMESTAMP(timezone=True),
                   server_default=text('now()'))
-    reference = Column(String, nullable=True)
-    history = Column(String, nullable=True)
-    drugs = relationship("RxLine", backref="prescriptions")
+    note = Column(String, nullable=True)
+    medicaments = relationship("Medicament", backref="ordinances")
     doctor_id = Column(Integer, ForeignKey(
         'users.id', ondelete="CASCADE"), nullable=True)
-    doctor = relationship('User', backref="prescriptions")
+    doctor = relationship('User', backref="ordinances")
     patient_id = Column(Integer, ForeignKey(
         'patients.id', ondelete="CASCADE"), nullable=True)
-    patient = relationship('Patient', backref="prescriptions")
+    patient = relationship('Patient', backref="ordinances")
 
 
-class RxLine(Base):
-    __tablename__ = 'rx_line'
+class Medicament(Base):
+    __tablename__ = 'medicaments'
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
     qsp = Column(String, nullable=True)
     boxes = Column(Integer, nullable=True)
     dosage = Column(String, nullable=True)
     ailments = Column(String, nullable=True)
-    medication_id = Column(Integer, ForeignKey(
-        'medications.id', ondelete="CASCADE"), nullable=True)
-    medication = relationship('Medication', backref="rx_line")
-    prescription_id = Column(Integer, ForeignKey("prescriptions.id"))
+    medication = Column(String, nullable=True)
+    ordinance_id = Column(Integer, ForeignKey("ordinances.id"))
 
 
 # Medical procedures------------------
@@ -173,8 +207,9 @@ class Room(Base):
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
     genre = Column(String, nullable=True)
-    name = Column(String, nullable=True)
-    cost = Column(Integer, nullable=True)
+    name = Column(String, nullable=False)
+    price = Column(Integer, nullable=False)
+    beds = Column(Integer, nullable=True, server_default='0')
 
 
 class Admission(Base):
@@ -210,8 +245,7 @@ class MedicalRecord(Base):
     ailments = Column(String, nullable=True)
     treatments = Column(String, nullable=True)
     tests = Column(String, nullable=True)
-    current_state = Column(String, nullable=True)
-    #
+    peculiarity = Column(String, nullable=True)
     doctor_id = Column(Integer, ForeignKey(
         'users.id', ondelete="CASCADE"), nullable=True)
     doctor = relationship('User', backref="medical_records")

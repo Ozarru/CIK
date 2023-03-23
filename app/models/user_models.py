@@ -22,16 +22,29 @@ class SubRole(Base):
     sec_level = Column(Integer, server_default='0', nullable=False)
 
 
+class Specialty(Base):
+    __tablename__ = 'specialties'
+
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    name = Column(String, nullable=False, unique=True)
+    description = Column(String, nullable=True)
+
+
 class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
     firstname = Column(String, nullable=False)
     lastname = Column(String, nullable=False)
+    age = Column(Integer, nullable=True)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-    phone = Column(String, unique=True, nullable=False)
+    tel = Column(String, unique=True, nullable=True)
+    cel = Column(String, unique=True, nullable=True)
     address = Column(String, nullable=True)
+    languages = Column(String, nullable=True)
+    closed_cases = Column(Integer, nullable=True)
+    experience = Column(Integer, server_default='0', nullable=True)
     is_active = Column(Boolean, server_default='FALSE', nullable=False)
     reg_date = Column(TIMESTAMP(timezone=True),
                       server_default=text('now()'))
@@ -42,6 +55,9 @@ class User(Base):
     subrole_id = Column(Integer, ForeignKey(
         'subroles.id', ondelete="CASCADE"), nullable=True)
     subrole = relationship('SubRole', backref="users")
+    specialty_id = Column(Integer, ForeignKey(
+        'specialties.id', ondelete="CASCADE"), nullable=True)
+    specialty = relationship('Specialty', backref="users")
 
 
 class Patient(Base):
@@ -54,7 +70,7 @@ class Patient(Base):
     lastname = Column(String, nullable=False)
     age = Column(Integer, nullable=False)
     gender = Column(String, nullable=False)
-    matrimony = Column(String, nullable=True)
+    civil_status = Column(String, nullable=True)
     reg_date = Column(TIMESTAMP(timezone=True),
                       server_default=text('now()'))
     # parameters
@@ -62,9 +78,13 @@ class Patient(Base):
     height = Column(Float, nullable=True)
     peculiarities = Column(String, nullable=True)
     allergies = Column(String, nullable=True)
-    history = Column(String, nullable=True)
     # contact info
     email = Column(String, unique=True, nullable=True)
     tel = Column(String, unique=True, nullable=True)
     cel = Column(String, unique=True, nullable=True)
     address = Column(String, nullable=True)
+    # insurance info
+    is_insurred = Column(Boolean, nullable=True, server_default='false')
+    isurance_id = Column(Integer, ForeignKey(
+        'insurances.id', ondelete='CASCADE'), nullable=True)
+    isurance = relationship('Insurance', backref='patients')

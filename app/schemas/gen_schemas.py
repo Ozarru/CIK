@@ -29,11 +29,48 @@ class TokenData(BaseModel):
     class Config:
         orm_mode = True
 
+# Appointment----------------------------------------
+
+
+class AppointmentReq(BaseModel):
+    patient_name: str
+    patient_tel: str
+    day: str
+    time: str
+    is_pending: bool = True
+    doctor_id: int
+
+
+class AppointmentRes(BaseModel):
+    id: int
+    date_booked: datetime
+    patient_name: str
+    patient_name: str
+    day: str
+    time: str
+    is_pending: bool
+    doctor: UserRes
+
+    class Config:
+        orm_mode = True
+
 
 # Consultation----------------------------------------
+
+
+class ConsultationGenre(BaseModel):
+    id: Optional[int]
+    name: str
+    price: int
+    parameters: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
 class ConsultationReq(BaseModel):
-    chem_tests: Optional[str]
-    para_chem_tests: Optional[str]
+    chemical_tests: Optional[str]
+    parachemical_tests: Optional[str]
     observations: Optional[str]
     diagnosis:  Optional[str]
     prognosis: Optional[str]
@@ -41,21 +78,22 @@ class ConsultationReq(BaseModel):
     requested_tests: Optional[str]
     weight: Optional[float]
     height: Optional[float]
-    temperatur: Optional[float]
+    temperature: Optional[float]
     systole: Optional[float]
     diastole: Optional[float]
     oxymetry: Optional[float]
     bmi: Optional[float]
-    is_pending: bool
+    is_pending: bool = True
     doctor_id: int
     patient_id: int
+    genre_id: Optional[int]
 
 
 class ConsultationRes(BaseModel):
     id: int
     date: datetime
-    chem_tests: Optional[str]
-    para_chem_tests: Optional[str]
+    chemical_tests: Optional[str]
+    parachemical_tests: Optional[str]
     observations: Optional[str]
     diagnosis: Optional[str]
     prognosis: Optional[str]
@@ -69,8 +107,9 @@ class ConsultationRes(BaseModel):
     oxymetry: Optional[float]
     bmi: Optional[float]
     is_pending: bool
-    doctor: UserResume
-    patient: PatientResume
+    doctor: UserRes
+    patient: PatientRes
+    genre: Optional[ConsultationGenre]
 
     class Config:
         orm_mode = True
@@ -87,6 +126,7 @@ class ConsultationResume(BaseModel):
     is_pending: bool
     doctor: UserResume
     patient: PatientResume
+    genre: Optional[ConsultationGenre]
 
     class Config:
         orm_mode = True
@@ -176,9 +216,10 @@ class CertificationRes(BaseModel):
 
 
 class Room(BaseModel):
-    genre: str
     name: str
-    cost: int
+    genre: Optional[str]
+    price: Optional[int]
+    beds: Optional[int]
 
     class Config:
         orm_mode = True

@@ -11,10 +11,11 @@ router = APIRouter(prefix='/med_diagnostics', tags=['Medical Diagnostics'])
 
 
 @router.get('/', response_model=List[gen_schemas.MedProcedure])
-def get_diagnostics(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def get_diagnostics(db: Session = Depends(get_db), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    # def get_diagnostics(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
     diagnostics = db.query(gen_models.MedDiagnostic).order_by(
         gen_models.MedDiagnostic.date).all()
 
@@ -25,10 +26,11 @@ def get_diagnostics(db: Session = Depends(get_db), current_user: dict = Depends(
 
 
 @router.get('/{id}', response_model=gen_schemas.MedProcedure)
-def get_diagnostic(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials.")
+def get_diagnostic(id: int, db: Session = Depends(get_db),):
+    # def get_diagnostic(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
     diagnostic = db.query(gen_models.MedDiagnostic).filter(
         gen_models.MedDiagnostic.id == id).first()
     if not diagnostic:
@@ -38,10 +40,11 @@ def get_diagnostic(id: int, db: Session = Depends(get_db), current_user: dict = 
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.MedProcedure)
-def create_diagnostic(diagnostic: gen_schemas.MedProcedure, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id > 2 or current_user.role_id != 4:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def create_diagnostic(diagnostic: gen_schemas.MedProcedure, db: Session = Depends(get_db),):
+    # def create_diagnostic(diagnostic: gen_schemas.MedProcedure, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if current_user.role_id > 2 or current_user.role_id != 4:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
     new_diagnostic = gen_models.MedDiagnostic(**diagnostic.dict())
     db.add(new_diagnostic)

@@ -16,8 +16,8 @@ def get_consultation(db: Session = Depends(get_db), limit: int = 0, offset: int 
     #     if not current_user:
     #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
     #                             detail=f"Forbidden!!! Insufficient authentication credentials")
-    consultations = db.query(gen_models.Consultation).order_by(
-        gen_models.Consultation.date).all()
+    consultations = db.query(gen_models.Ordinance).order_by(
+        gen_models.Ordinance.date).all()
 
     if not consultations:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -31,8 +31,8 @@ def get_consultation(id: int, db: Session = Depends(get_db),):
     #     if not current_user:
     #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
     #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
-    consultation = db.query(gen_models.Consultation).filter(
-        gen_models.Consultation.id == id).first()
+    consultation = db.query(gen_models.Ordinance).filter(
+        gen_models.Ordinance.id == id).first()
     if not consultation:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"No consultation with id: {id} was found")
@@ -40,13 +40,13 @@ def get_consultation(id: int, db: Session = Depends(get_db),):
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.ConsultationRes)
-def create_consultation(consultation: gen_schemas.ConsultationReq, db: Session = Depends(get_db), ):
+def create_consultation(consultation: gen_schemas.ConsultationReq, db: Session = Depends(get_db),):
     # def create_consultation(consultation: gen_schemas.ConsultationReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     #     if current_user.role_id != 1 or current_user.role_id != 3:
     #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
     #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
-    new_consultation = gen_models.Consultation(**consultation.dict())
+    new_consultation = gen_models.Ordinance(**consultation.dict())
     db.add(new_consultation)
     db.commit()
     db.refresh(new_consultation)
@@ -58,8 +58,8 @@ def create_consultation(consultation: gen_schemas.ConsultationReq, db: Session =
 def delete_consultation(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
 
     if current_user.role_id <= 2:
-        consultation = db.query(gen_models.Consultation).filter(
-            gen_models.Consultation.id == id)
+        consultation = db.query(gen_models.Ordinance).filter(
+            gen_models.Ordinance.id == id)
         if not consultation.first():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail=f"No consultation with id: {id} was found!")
@@ -75,8 +75,8 @@ def delete_consultation(id: int, db: Session = Depends(get_db), current_user: di
 @router.put('/{id}')
 def update_consultation(id: int, updated_consultion: gen_schemas.ConsultationReq, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     if current_user.role_id <= 2 or current_user.role_id == 4:
-        consultation = db.query(gen_models.Consultation).filter(
-            gen_models.Consultation.id == id)
+        consultation = db.query(gen_models.Ordinance).filter(
+            gen_models.Ordinance.id == id)
         if not consultation.first():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail=f"No consultation with id: {id} was not found")

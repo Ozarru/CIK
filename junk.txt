@@ -1,0 +1,51 @@
+
+
+class Salary(Base):
+    __tablename__ = 'salaries'
+
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    amount = Column(Integer, nullable=False)
+    qualification = Column(String, nullable=False)
+    role_id = Column(Integer, ForeignKey(
+        'roles.id', ondelete="CASCADE"), nullable=True)
+    role = relationship('Role', backref="salaries")
+
+
+class Wage(Base):
+    __tablename__ = 'wages'
+
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    hourly_rate = Column(Integer, nullable=False)
+    qualification = Column(String, nullable=False)
+    role_id = Column(Integer, ForeignKey(
+        'roles.id', ondelete="CASCADE"), nullable=True)
+    role = relationship('Role', backref="wages")
+
+
+# ----------------------
+class PaySalary(Base):
+    __tablename__ = 'pay_salaries'
+
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    date = Column(TIMESTAMP(timezone=True),
+                  server_default=text('now()'))
+    amount = Column(Integer, nullable=False)
+    month = Column(String, nullable=False)
+    staff_id = Column(Integer, ForeignKey(
+        'users.id', ondelete="CASCADE"), nullable=True)
+    staff = relationship('User', backref="pay_salaries")
+
+
+class PayWage(Base):
+    __tablename__ = 'pay_wages'
+
+    id = Column(Integer, primary_key=True,  autoincrement=True, nullable=False)
+    date = Column(TIMESTAMP(timezone=True),
+                  server_default=text('now()'))
+    amount = Column(Integer, nullable=False)
+    hourly_rate = Column(Integer, nullable=False)
+    hours_worked = Column(Float, nullable=False)
+    month = Column(String, nullable=False)
+    staff_id = Column(Integer, ForeignKey(
+        'users.id', ondelete="CASCADE"), nullable=True)
+    staff = relationship('User', backref="pay_wages")

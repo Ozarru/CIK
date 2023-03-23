@@ -11,10 +11,11 @@ router = APIRouter(prefix='/med_imageries', tags=['Medical Imageries'])
 
 
 @router.get('/', response_model=List[gen_schemas.MedExamination])
-def get_imageries(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def get_imageries(db: Session = Depends(get_db), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    # def get_imageries(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user), limit: int = 0, offset: int = 0, search: Optional[str] = ""):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
     imageries = db.query(gen_models.MedImagery).order_by(
         gen_models.MedImagery.date).all()
 
@@ -25,10 +26,11 @@ def get_imageries(db: Session = Depends(get_db), current_user: dict = Depends(oa
 
 
 @router.get('/{id}', response_model=gen_schemas.MedExamination)
-def get_imagery(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if not current_user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials.")
+def get_imagery(id: int, db: Session = Depends(get_db),):
+    # def get_imagery(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if not current_user:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials.")
     imagery = db.query(gen_models.MedImagery).filter(
         gen_models.MedImagery.id == id).first()
     if not imagery:
@@ -38,10 +40,11 @@ def get_imagery(id: int, db: Session = Depends(get_db), current_user: dict = Dep
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=gen_schemas.MedExamination)
-def create_imagery(imagery: gen_schemas.MedExamination, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    if current_user.role_id > 2 or current_user.role_id != 4:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail=f"Forbidden!!! Insufficient authentication credentials")
+def create_imagery(imagery: gen_schemas.MedExamination, db: Session = Depends(get_db),):
+    # def create_imagery(imagery: gen_schemas.MedExamination, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    #     if current_user.role_id > 2 or current_user.role_id != 4:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+    #                             detail=f"Forbidden!!! Insufficient authentication credentials")
 
     new_imagery = gen_models.MedImagery(**imagery.dict())
     db.add(new_imagery)
